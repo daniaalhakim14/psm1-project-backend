@@ -22,23 +22,50 @@ const parsePdfReceipt = async (req, res) => {
     };
 
     const prompt = `
-You are a receipt parser. From this receipt, extract the following information:
-- Date
-- Total Amount
-- List of items: each with name, quantity (if any), and price.
+You are a smart receipt parser. From this receipt, extract the following information:
+- Date of the receipt
+- Total amount
+- A list of items with each item's name, quantity (if available), and price
+- Determine the most appropriate expense category for the receipt based on the items purchased
 
-Format the result as JSON:
+Use the following allowed categories and their description in brackets to classify the receipt:
+
+Allowed categories:
+- Food (Groceries, Restaurants, Snacks)
+- Transportation (Travel, Fuel, Parking)
+- Entertainment (Movies, Music, Games, Dining out)
+- Housing (Rent, Utilities, Home Improvements)
+- Shopping (Clothing, Electronics, Accessories)
+- Healthcare (Medical Appointments, Prescriptions)
+- Personal (Hobbies, Gifts, Donations)
+- Education (Tuition Fees, Books)
+- Savings (Savings for future goals)
+- Other (Miscellaneous expenses)
+
+Return the response in the following JSON format:
 {
   "date": "...",
   "total": "...",
+  "category": {
+    "name": "...",
+    "description": "..."
+  },
   "items": [
     { "name": "...", "quantity": "...", "price": "..." }
   ]
 }
 `;
 
-    const result = await model.generateContent([prompt, filePart]);
-    const text = result.response.text();
+    let text = ""; // declare text in outer scope
+
+    try {
+      const result = await model.generateContent([prompt, filePart]);
+      text = result.response.text();
+      console.log("Gemini Response:\n", text);
+    } catch (genErr) {
+      console.error("Error generating content:", genErr);
+      return res.status(500).json({ error: "AI model failed", details: genErr.message });
+    }
 
     try {
       const parsed = JSON.parse(text);
