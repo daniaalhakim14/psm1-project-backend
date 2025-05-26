@@ -12,8 +12,7 @@ const parsePdfReceipt = async (req, res) => {
   }
 
   try {
-    const filePath = path.resolve(req.file.path);
-    const fileBuffer = fs.readFileSync(filePath);
+    const fileBuffer = req.file.buffer;
     const filePart = {
       inlineData: {
         data: fileBuffer.toString('base64'),
@@ -71,10 +70,10 @@ Return the response in the following JSON format:
       const parsed = JSON.parse(text);
       res.json({ data: parsed });
     } catch (err) {
-      res.json({ raw: text.trim() });
+      res.status(200).json({ data: { rawText: text.trim() } }); // Still under `data`
     }
 
-    fs.unlinkSync(filePath); // Clean up file
+    // fs.unlinkSync(filePath); // Clean up file
   } catch (err) {
     console.error("Error processing receipt:", err.message);
     res.status(500).json({ error: "Failed to process PDF", details: err.message });

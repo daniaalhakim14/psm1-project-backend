@@ -4,15 +4,10 @@ const path = require('path');
 const { parsePdfReceipt } = require('../controllers/receiptController'); // ✅ correct export
 
 const router = express.Router();
-
-const storage = multer.diskStorage({
-  destination: './uploads',
-  filename: (req, file, cb) => {
-    cb(null, `receipt_${Date.now()}${path.extname(file.originalname)}`);
-  },
-});
+// pdf storage in memory not on disk
+const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
-router.post('/', upload.single('receipt'), parsePdfReceipt); // ✅ use it directly
+router.post('/', upload.single('receipt'), parsePdfReceipt);
 
 module.exports = router;
