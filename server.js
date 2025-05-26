@@ -20,6 +20,8 @@ app.use(cors(corsOptions));
 // Import routes handlers
 const categoryRouter = require('./routes/category');
 const uploadReceiptRouter = require('./routes/uploadReceipt');
+const expenseRouter = require('./routes/expense');
+
 
 
 // parse json
@@ -30,6 +32,8 @@ app.use(express.urlencoded({ limit: '10mb', extended: true }));
 // register the routes
 app.use('/category',categoryRouter);
 app.use('/upload-receipt', uploadReceiptRouter);
+app.use('/expense', expenseRouter);
+
 
 // Defalut route
 app.get('/', (req, res) => {
