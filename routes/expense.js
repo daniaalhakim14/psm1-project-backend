@@ -6,5 +6,5 @@ const expenseController = require('../controllers/expenseController');
 
 // POST route with file upload
 router.post('/', upload.single('receipt'), expenseController.addExpense);
-
+router.get('/expense', expenseController.getViewExpense); 
 module.exports = router;
