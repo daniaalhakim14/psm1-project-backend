@@ -7,6 +7,6 @@ const authenticateToken = require('../middleware/authMiddleware'); // 🆕
 
 // POST route with file upload
 router.post('/', authenticateToken, upload.single('receipt'), expenseController.addExpense);
-router.get('/', authenticateToken, expenseController.getExpenses);
+router.get('/:id', authenticateToken, expenseController.getExpenses);
 
 module.exports = router;

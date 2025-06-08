@@ -40,18 +40,65 @@ exports.getExpenses = async (req, res) => {
     const userId = req.user.userid; // from JWT
 
     const query = `
-        SELECT e.*, ec.name AS category_name, ec.description AS category_description
-        FROM expense e
-        JOIN expensecategory ec ON e.categoryId = ec.id
-        WHERE e.userId = $1
-        ORDER BY e.date DESC;
+        Select
+            e.*,
+            c.categoryname as categoryname,
+            c.iconcodepoint,
+            c.iconfontfamily,
+            c.iconcolor
+        FROM 
+            expense e
+        JOIN
+            expensecategory c
+        ON
+            e.categoryid = c.categoryid
+        WHERE
+            e.userid = $1
     `;
 
     try {
         const result = await db.query(query, [userId]);
+        // console.log('Fetched expenses for user:', userId);
+        // console.log('Expenses result:', JSON.stringify(result.rows, null, 2)); // Pretty print
         res.status(200).json(result.rows);
     } catch (error) {
         console.error('Error fetching expenses:', error.message);
         res.status(500).json({ error: 'Database error', details: error.message });
     }
+};
+
+exports.getListExpenses = async (req, res) => {
+    const userId = req.user.userid; // from JWT
+
+    const query = `
+        SELECT
+        e.expenseid,
+        e.amount,   
+        e.date,
+        e.description,
+        e.userid,
+        e.platformid,
+        e.categoryid,
+        c.categoryname,
+        c.iconcodepoint,
+        c.iconfontfamily,
+        c.iconcolor
+
+        FROM expense e
+        JOIN expensecategory c ON e.categoryid = c.categoryid,
+        WHERE e.userid = $1
+        ORDER BY e.date DESC;
+        `;
+
+        db.query(query,[userid],(error, results) =>{
+        if(error){
+            console.error('Database error:', error);
+            return res.status(500).send({error:'Database error'});
+        }
+        if (results.rows.length > 0) {
+            res.status(200).json(results.rows); // Send the transaction data as JSON
+        } else {
+            res.status(404).send({ error: 'No transactions found' });
+        }
+    })
 };

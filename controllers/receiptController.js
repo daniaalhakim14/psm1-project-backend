@@ -60,7 +60,7 @@ Return the response in the following JSON format:
     try {
       const result = await model.generateContent([prompt, filePart]);
       text = result.response.text();
-      console.log("Gemini Response:\n", text);
+      //console.log("Gemini Response:\n", text);
     } catch (genErr) {
       console.error("Error generating content:", genErr);
       return res.status(500).json({ error: "AI model failed", details: genErr.message });
