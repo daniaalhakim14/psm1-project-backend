@@ -24,6 +24,7 @@ const categoryRouter = require('./routes/category');
 const uploadReceiptRouter = require('./routes/uploadReceipt');
 const expenseRouter = require('./routes/expense');
 const userRouter = require('./routes/user');
+const itemPriceRouter = require('./routes/itemPrice');
 
 
 
@@ -37,6 +38,7 @@ app.use('/category',categoryRouter);
 app.use('/upload-receipt', uploadReceiptRouter);
 app.use('/expense', expenseRouter);
 app.use('/user', userRouter);
+app.use('/itemPrice', itemPriceRouter);
 
 
 // Defalut route
